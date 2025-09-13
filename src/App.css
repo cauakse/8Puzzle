@@ -1,38 +1,80 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.App-link {
-  color: #61dafb;
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+  background-color: #fafafa;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.boards-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.current-board {
+  flex: 1;
+  min-width: 300px;
+}
+
+.goal-board {
+  flex: 1;
+  min-width: 300px;
+}
+
+.status-info {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.matrix-display {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 250px;
+}
+
+.matrix-display h4 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.matrix-display pre {
+  background-color: #f5f5f5;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  margin: 0;
+  overflow-x: auto;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .boards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .status-info {
+    flex-direction: column;
   }
 }

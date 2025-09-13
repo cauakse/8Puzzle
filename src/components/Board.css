@@ -1,0 +1,114 @@
+.board {
+  margin: 20px;
+  text-align: center;
+}
+
+.board h3 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 18px;
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 2px;
+  width: 300px;
+  height: 300px;
+  margin: 0 auto;
+  border: 2px solid #333;
+  background-color: #333;
+}
+
+.cell {
+  background-color: #4CAF50;
+  border: 1px solid #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.cell:hover {
+  background-color: #45a049;
+}
+
+.cell.empty {
+  background-color: #f0f0f0;
+  cursor: default;
+}
+
+.cell.empty:hover {
+  background-color: #f0f0f0;
+}
+
+.goal-cell {
+  background-color: #2196F3 !important;
+}
+
+.goal-cell:hover {
+  background-color: #1976D2 !important;
+}
+
+.goal-cell.empty {
+  background-color: #e3f2fd !important;
+}
+
+.goal-cell.empty:hover {
+  background-color: #e3f2fd !important;
+}
+
+.board.animating .cell {
+  pointer-events: none;
+}
+
+/* Animação para movimentação */
+.cell.moving {
+  transform: scale(1.1);
+  z-index: 10;
+  animation: moveAnimation 0.3s ease-in-out;
+}
+
+@keyframes moveAnimation {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(5deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+/* Estilo para drag and drop */
+.cell[draggable="true"] {
+  cursor: grab;
+  position: relative;
+}
+
+.cell[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.cell[draggable="true"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Efeito de drop zone */
+.cell.drop-zone {
+  background-color: #ffeb3b !important;
+  border: 2px dashed #ff9800 !important;
+}
+
+/* Animação de sucesso */
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.board.success .cell {
+  animation: successPulse 0.6s ease-in-out;
+}
