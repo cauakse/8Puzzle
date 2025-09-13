@@ -74,30 +74,28 @@ export const aStarSearch1 = async (initialState, goalState) => {
   let nodesExplored = 0;
   let startExecutionTime = Date.now();
   let path = [];
-  let anterior = initialState;
 
-  queue.queue({ matriz: initialState, deph: 0 });
+  queue.queue({ matriz: initialState, deph: 0 ,parent: null});
   let notFound = true;
 
   while (queue.length > 0 && notFound) {
     const currentState = queue.dequeue();
-    path.push({ from: anterior, to: currentState.matriz });
-    anterior = currentState.matriz;
     visited.add(JSON.stringify(currentState.matriz));
     if (areStatesEqual(currentState.matriz, goalState)) {
+      path=reconstructPath(currentState.parent);
       notFound = false;
     } else {
       const sons = generatePossibleMoves(currentState.matriz);
       sons.forEach((son) => {
         if (!visited.has(JSON.stringify(son.state)))
-          queue.queue({ matriz: son.state, deph: currentState.deph + 1 });
+          queue.queue({ matriz: son.state, deph: currentState.deph + 1 ,parent: currentState});
       });
     }
     nodesExplored++;
   }
 
   let endExecutionTime = Date.now();
-
+  path.push(goalState);
   return {
     found: !notFound,
     path: path,
@@ -105,6 +103,16 @@ export const aStarSearch1 = async (initialState, goalState) => {
     executionTime: endExecutionTime - startExecutionTime + "ms",
     message: notFound ? "Não encontrado em nivel 1" : "Encontrado em nivel 1",
   };
+};
+
+const reconstructPath = (node) => {
+  const path = [];
+  let current = node;
+  while (current !== null) {
+    path.unshift(current.matriz); // Adiciona o estado no início do array
+    current = current.parent;
+  }
+  return path;
 };
 
 export const aStarSearch2 = async (initialState, goalState) => {
@@ -115,8 +123,6 @@ export const aStarSearch2 = async (initialState, goalState) => {
   let nodesExplored = 0;
   let startExecutionTime = Date.now();
   let path = [];
-  let anterior = initialState;
-
   // Heurística inicial (nível 2)
   let initialHeuristic = null;
   const initialMoves = generatePossibleMoves(initialState);
@@ -129,15 +135,14 @@ export const aStarSearch2 = async (initialState, goalState) => {
     }
   });
 
-  queue.queue({ matriz: initialState, deph: 0, heuristic: initialHeuristic });
+  queue.queue({ matriz: initialState, deph: 0, heuristic: initialHeuristic, parent: null });
   let notFound = true;
   while (queue.length > 0 && notFound) {
     const currentState = queue.dequeue();
-    path.push({ from: anterior, to: currentState.matriz });
-    anterior = currentState.matriz;
     visited.add(JSON.stringify(currentState.matriz));
     nodesExplored++;
     if (areStatesEqual(currentState.matriz, goalState)) {
+      path=reconstructPath(currentState.parent);
       notFound = false;
     } else {
       //heuristica do pai vai ser a heuristica menor dos filhos
@@ -161,12 +166,14 @@ export const aStarSearch2 = async (initialState, goalState) => {
             matriz: son.state,
             deph: currentState.deph + 1,
             heuristic: son.heuristic,
+            parent: currentState,
           });
         }
       });
     }
   }
   let endExecutionTime = Date.now();
+  path.push(goalState);
   return {
     found: !notFound,
     path: path,
