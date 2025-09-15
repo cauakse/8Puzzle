@@ -50,24 +50,52 @@ export const generatePossibleMoves = (state) => {
   return moves;
 };
 
-export const calculateHeuristic = (state, goalState) => {
+const misplacedCountHeuristic = (state, goalState) => {
   let misplacedCount = 0;
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 3; j++) {
-      if (state[i][j] !== 0 && state[i][j] !== goalState[i][j]) {
-        misplacedCount++;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (state[i][j] !== 0 && state[i][j] !== goalState[i][j]) {
+          misplacedCount++;
+        }
+      }
+    }
+    return misplacedCount;
+}
+
+const manhattanDistanceHeuristic = (state, goalState) => {
+ let totalDistance = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        const value = state[i][j];
+        //achar qual o lugar ele deveria estar
+        for (let x = 0; x < 3; x++) {
+          for (let y = 0; y < 3; y++) {
+            if (goalState[x][y] === value) {
+              //calcular a distancia manhattan
+              const distance = Math.abs(i - x) + Math.abs(j - y);
+              totalDistance += distance;
+            }
+          }
       }
     }
   }
-  return misplacedCount;
+    return totalDistance;
+}
+
+const calculateHeuristic = (state, goalState, heuristicType) => {
+  if (heuristicType === 'misplaced') {
+    return misplacedCountHeuristic(state, goalState);
+  } else { // 'manhattan'
+    return manhattanDistanceHeuristic(state, goalState);
+  }
 };
 
-export const aStarSearch1 = async (initialState, goalState) => {
+export const aStarSearch1 = async (initialState, goalState,heuristic) => {
   const queue = new PriorityQueue({
     comparator: (a, b) =>
-      calculateHeuristic(a.matriz, goalState) +
+      calculateHeuristic(a.matriz, goalState,heuristic) +
       a.deph -
-      (calculateHeuristic(b.matriz, goalState) + b.deph),
+      (calculateHeuristic(b.matriz, goalState,heuristic) + b.deph),
   });
 
   let visited = new Set();
@@ -115,7 +143,7 @@ const reconstructPath = (node) => {
   return path;
 };
 
-export const aStarSearch2 = async (initialState, goalState) => {
+export const aStarSearch2 = async (initialState, goalState,heuristic) => {
   const queue = new PriorityQueue({
     comparator: (a, b) => a.heuristic + a.deph - (b.heuristic + b.deph),
   });
@@ -153,7 +181,7 @@ export const aStarSearch2 = async (initialState, goalState) => {
           let minHeuristic = null;
           const nivel2Sons = generatePossibleMoves(son.state);
           nivel2Sons.forEach((nivel2Son) => {
-            const h = calculateHeuristic(nivel2Son.state, goalState);
+            const h = calculateHeuristic(nivel2Son.state, goalState,heuristic);
             if (minHeuristic === null) {
               minHeuristic = h;
             } else if (h < minHeuristic) {

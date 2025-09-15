@@ -9,7 +9,9 @@ const Sidebar = ({
   onShuffle,
   onSolve,
   isShuffling,
-  isSolving
+  isSolving,
+  selectedHeuristic,
+  setSelectedHeuristic
 }) => {
   return (
     <div className="sidebar">
@@ -21,6 +23,7 @@ const Sidebar = ({
           <label>
             <input
               type="radio"
+              name="algorithm"
               value="astar"
               checked={selectedAlgorithm === 'astar'}
               onChange={(e) => setSelectedAlgorithm(e.target.value)}
@@ -30,6 +33,7 @@ const Sidebar = ({
           <label>
             <input
               type="radio"
+              name="algorithm"
               value="bfs"
               checked={selectedAlgorithm === 'bfs'}
               onChange={(e) => setSelectedAlgorithm(e.target.value)}
@@ -39,12 +43,40 @@ const Sidebar = ({
         </div>
       </div>
 
+      <div className='section'>
+       <h3>Heuristica</h3>
+        <div className="radio-group">
+          <label>
+            <input
+              type="radio"
+              name="heuristic"
+              value="manhattan"
+              checked={selectedHeuristic === 'manhattan'}
+              onChange={(e) => setSelectedHeuristic(e.target.value)}
+            />
+            Manhattan
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="heuristic"
+              value="misplaced"
+              checked={selectedHeuristic === 'misplaced'}
+              onChange={(e) => setSelectedHeuristic(e.target.value)}
+            />
+            Quadrados fora do lugar
+          </label>
+        </div>
+      </div>
+      
+
       <div className="section">
         <h3>Profundidade</h3>
         <div className="radio-group">
           <label>
             <input
               type="radio"
+              name="depth"
               value="1"
               checked={selectedDepth === '1'}
               onChange={(e) => setSelectedDepth(e.target.value)}
@@ -54,6 +86,7 @@ const Sidebar = ({
           <label>
             <input
               type="radio"
+              name="depth"
               value="2"
               checked={selectedDepth === '2'}
               onChange={(e) => setSelectedDepth(e.target.value)}

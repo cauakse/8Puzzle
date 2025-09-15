@@ -63,6 +63,25 @@
   overflow-x: auto;
 }
 
+.solution-info {
+  background-color: #e8f4fd;
+  border: 1px solid #bde0fe;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.solution-info h4 {
+  margin: 0 0 10px 0;
+  color: #023e8a;
+}
+
+.solution-info p {
+  margin: 5px 0;
+  color: #001233;
+}
+
 /* Responsividade */
 @media (max-width: 768px) {
   .app {

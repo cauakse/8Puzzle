@@ -22,7 +22,9 @@ function App() {
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('astar');
   const [selectedDepth, setSelectedDepth] = useState('1');
   const [isShuffling, setIsShuffling] = useState(false);
+  const [selectedHeuristic, setSelectedHeuristic] = useState('manhattan');
   const [isSolving, setIsSolving] = useState(false);
+  const [solutionInfo, setSolutionInfo] = useState(null); // Estado para informações da solução
 
   const findPosition = (board, value) => {
     for (let i = 0; i < 3; i++) {
@@ -115,23 +117,44 @@ function App() {
     setIsShuffling(false);
   }, [currentBoard]);
 
-  const solveBoard = useCallback(() => {
+  const animateSolution = async (path) => {
+    for (const boardState of path) {
+      setCurrentBoard(boardState);
+      await new Promise(resolve => setTimeout(resolve, 300)); // 300ms de delay entre os passos
+    }
+  };
+
+  const solveBoard = useCallback(async () => {
     setIsSolving(true);
-    
+    setSolutionInfo(null); // Limpa informações anteriores
+
+    let promise;
     if (selectedAlgorithm === 'astar' && selectedDepth === '1') {
-      aStarSearch1(currentBoard, goalBoard, 1).then(solution => {
-        alert('Solução encontrada! Veja o console para detalhes.');
-        console.log('Solução:', solution);
-      });
+      promise = aStarSearch1(currentBoard, goalBoard,selectedHeuristic);
     } else if (selectedAlgorithm === 'astar' && selectedDepth === '2') {
-      aStarSearch2(currentBoard, goalBoard).then(solution => {
-        alert('Solução encontrada! Veja o console para detalhes.');
-        console.log('Solução:', solution);
-      });
+      promise = aStarSearch2(currentBoard, goalBoard, selectedHeuristic);
     } else if (selectedAlgorithm === 'bfs' && selectedDepth === '1') {
-      console.log('Executando BFS Nível 1');
+      // Chamar a função bfsSearch1 quando implementada
+      promise = Promise.resolve({ found: false, message: "BFS Nível 1 não implementado" });
     } else if (selectedAlgorithm === 'bfs' && selectedDepth === '2') {
-      console.log('Executando BFS Nível 2');
+      // Chamar a função bfsSearch2 quando implementada
+      promise = Promise.resolve({ found: false, message: "BFS Nível 2 não implementado" });
+    }
+
+    if (promise) {
+      const solution = await promise;
+      setSolutionInfo({
+        nodesExplored: solution.nodesExplored,
+        executionTime: solution.executionTime,
+        message: solution.message,
+        pathLength: solution.path ? solution.path.length : 0
+      });
+
+      if (solution.found && solution.path) {
+        await animateSolution(solution.path);
+      } else {
+        alert(solution.message || 'Solução não encontrada.');
+      }
     }
     
     setIsSolving(false);
@@ -144,6 +167,8 @@ function App() {
         setSelectedAlgorithm={setSelectedAlgorithm}
         selectedDepth={selectedDepth}
         setSelectedDepth={setSelectedDepth}
+        selectedHeuristic={selectedHeuristic}
+        setSelectedHeuristic={setSelectedHeuristic}
         onShuffle={shuffleBoard}
         onSolve={solveBoard}
         isShuffling={isShuffling}
@@ -168,6 +193,16 @@ function App() {
           />
         </div>
         
+        {solutionInfo && (
+          <div className="solution-info">
+            <h4>Resultados da Busca:</h4>
+            <p><strong>{solutionInfo.message}</strong></p>
+            <p>Nós explorados: {solutionInfo.nodesExplored}</p>
+            <p>Tempo de execução: {solutionInfo.executionTime}</p>
+            <p>Passos na solução: {solutionInfo.pathLength}</p>
+          </div>
+        )}
+
         <div className="status-info">
           <div className="matrix-display">
             <h4>Estado Atual (Matriz):</h4>
