@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import Board from './components/Board';
 import Sidebar from './components/Sidebar';
 import './App.css';
-import { aStarSearch1, aStarSearch2 } from './algorithms/searchAlgorithms';
+import { aStarSearch1, aStarSearch2, bfsSearch1, bfsSearch2 } from './algorithms/searchAlgorithms';
 
 function App() {
   // Estados do puzzle
@@ -134,11 +134,9 @@ function App() {
     } else if (selectedAlgorithm === 'astar' && selectedDepth === '2') {
       promise = aStarSearch2(currentBoard, goalBoard, selectedHeuristic);
     } else if (selectedAlgorithm === 'bfs' && selectedDepth === '1') {
-      // Chamar a função bfsSearch1 quando implementada
-      promise = Promise.resolve({ found: false, message: "BFS Nível 1 não implementado" });
+      promise = bfsSearch1(currentBoard, goalBoard, selectedHeuristic);
     } else if (selectedAlgorithm === 'bfs' && selectedDepth === '2') {
-      // Chamar a função bfsSearch2 quando implementada
-      promise = Promise.resolve({ found: false, message: "BFS Nível 2 não implementado" });
+      promise = bfsSearch2(currentBoard, goalBoard, selectedHeuristic);
     }
 
     if (promise) {
