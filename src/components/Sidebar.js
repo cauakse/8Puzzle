@@ -38,7 +38,7 @@ const Sidebar = ({
               checked={selectedAlgorithm === 'bfs'}
               onChange={(e) => setSelectedAlgorithm(e.target.value)}
             />
-            BFS (Busca em Largura)
+            Best First
           </label>
         </div>
       </div>
